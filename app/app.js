@@ -9,11 +9,27 @@ import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+//Import mongoose Module
+import mongoose from "mongoose"; 
+
+//Configuration Module
+import { MongoURI, Secret } from "../config/config.js";
+
+
+
 //Import Router
 import indexRouter from "./routes/index.route.server.js";
 
 //instaniate app-server
 const app = express();
+
+//Complete the DB configuration
+mongoose.connect(MongoURI);
+const db = mongoose.connection;
+
+//Listen for connection success or error
+db.on('open', () => console.log("Connected to MongoDB"));
+db.on('error', () => console.log("Mongo Connection Error"));
 
 //setup ViewEngine EJS
 app.set("views", path.join(__dirname, "/views"));
@@ -41,6 +57,3 @@ app.use("/", indexRouter);
 // console.log("Server running at http://localhost:3000");
 export default app;
 
-function myFunction() {
-  window.location.href = "http://localhost:3000/home";
-}
